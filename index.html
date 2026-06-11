@@ -1,0 +1,866 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>PinkStudy🌸</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet"/>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+<style>
+  :root {
+    --pink-deep: #c2185b;
+    --pink-main: #e91e8c;
+    --pink-bright: #ff4db8;
+    --pink-soft: #f8bbd9;
+    --pink-blush: #fce4ec;
+    --pink-light: #fff0f6;
+    --pink-hot: #ff1493;
+    --pink-rose: #ff69b4;
+    --pink-pale: #ffe4f0;
+    --text-dark: #2d1a2e;
+    --text-mid: #6b3a5e;
+    --white: #ffffff;
+    --shadow: 0 8px 32px rgba(233,30,140,0.15);
+    --shadow-lg: 0 16px 48px rgba(233,30,140,0.22);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Poppins', sans-serif; background: var(--pink-blush); color: var(--text-dark); min-height: 100vh; }
+
+  /* ── LOGIN ── */
+  #loginScreen {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #ff80c0 0%, #e91e8c 40%, #c2185b 100%);
+    display: flex; align-items: center; justify-content: center;
+    position: fixed; inset: 0; z-index: 9999;
+  }
+  .login-card {
+    background: rgba(255,255,255,0.97);
+    border-radius: 28px;
+    padding: 50px 44px;
+    width: 100%; max-width: 420px;
+    box-shadow: 0 24px 64px rgba(194,24,91,0.35);
+    text-align: center;
+  }
+  .login-logo { font-size: 3rem; margin-bottom: 4px; }
+  .login-title { font-family: 'Playfair Display', serif; font-size: 2rem; color: var(--pink-deep); font-weight: 900; }
+  .login-sub { color: var(--text-mid); font-size: 0.85rem; margin-bottom: 28px; }
+  .login-card .form-control {
+    border: 2px solid var(--pink-soft);
+    border-radius: 14px; padding: 12px 16px;
+    font-family: 'Poppins', sans-serif;
+    transition: border-color 0.2s;
+  }
+  .login-card .form-control:focus { border-color: var(--pink-main); box-shadow: 0 0 0 3px rgba(233,30,140,0.12); }
+  .btn-pink-login {
+    background: linear-gradient(135deg, var(--pink-bright), var(--pink-deep));
+    color: #fff; border: none; border-radius: 14px;
+    padding: 13px; font-size: 1rem; font-weight: 600;
+    width: 100%; margin-top: 8px; cursor: pointer;
+    transition: opacity 0.2s, transform 0.2s;
+    font-family: 'Poppins', sans-serif;
+  }
+  .btn-pink-login:hover { opacity: 0.92; transform: translateY(-1px); }
+  .login-error { color: var(--pink-deep); font-size: 0.82rem; margin-top: 8px; display: none; }
+  .login-hearts { font-size: 1.4rem; letter-spacing: 4px; margin-bottom: 18px; }
+
+  /* ── APP SHELL ── */
+  #app { display: none; }
+
+  /* ── HEADER ── */
+  .app-header {
+    background: linear-gradient(135deg, #ff4db8 0%, #e91e8c 50%, #c2185b 100%);
+    padding: 18px 32px;
+    display: flex; align-items: center; justify-content: space-between;
+    box-shadow: 0 4px 20px rgba(194,24,91,0.3);
+    position: sticky; top: 0; z-index: 100;
+  }
+  .header-title { font-family: 'Playfair Display', serif; font-size: 1.5rem; color: #fff; font-weight: 900; letter-spacing: 0.5px; }
+  .header-right { display: flex; align-items: center; gap: 14px; }
+  .streak-badge {
+    background: rgba(255,255,255,0.22); color: #fff;
+    border-radius: 20px; padding: 5px 14px;
+    font-size: 0.8rem; font-weight: 600;
+  }
+  .btn-logout {
+    background: rgba(255,255,255,0.2); color: #fff; border: 1.5px solid rgba(255,255,255,0.5);
+    border-radius: 10px; padding: 5px 14px; font-size: 0.8rem; cursor: pointer;
+    font-family: 'Poppins', sans-serif; transition: background 0.2s;
+  }
+  .btn-logout:hover { background: rgba(255,255,255,0.35); }
+
+  /* ── TOAST ── */
+  .welcome-toast {
+    position: fixed; top: 24px; right: 24px; z-index: 99999;
+    background: linear-gradient(135deg, #ff4db8, #c2185b);
+    color: #fff; border-radius: 18px; padding: 18px 26px;
+    box-shadow: 0 8px 32px rgba(194,24,91,0.4);
+    font-size: 0.92rem; font-weight: 500; max-width: 320px;
+    animation: slideIn 0.5s ease, fadeOut 0.5s ease 4.5s forwards;
+    display: none;
+  }
+  .welcome-toast strong { display: block; font-size: 1.05rem; margin-bottom: 2px; }
+  @keyframes slideIn { from { transform: translateX(120%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+  @keyframes fadeOut { to { opacity: 0; transform: translateX(120%); } }
+
+  /* ── MAIN LAYOUT ── */
+  .main-content { padding: 28px 32px; max-width: 1200px; margin: 0 auto; }
+
+  /* ── EXAM COUNTDOWN ── */
+  .exam-banner {
+    background: linear-gradient(135deg, var(--pink-hot), var(--pink-deep));
+    color: #fff; border-radius: 18px; padding: 16px 24px;
+    margin-bottom: 24px; display: none;
+    align-items: center; gap: 14px;
+    box-shadow: var(--shadow);
+  }
+  .exam-banner .bi { font-size: 1.6rem; }
+  .exam-banner-text strong { font-size: 1rem; }
+  .exam-banner-text span { font-size: 0.82rem; opacity: 0.9; }
+
+  /* ── CARDS ── */
+  .pink-card {
+    background: #fff; border-radius: 20px;
+    box-shadow: var(--shadow); padding: 24px;
+    margin-bottom: 24px;
+  }
+  .pink-card-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.15rem; color: var(--pink-deep);
+    font-weight: 700; margin-bottom: 16px;
+    display: flex; align-items: center; gap: 8px;
+  }
+
+  /* ── TODAY VIEW ── */
+  .today-session {
+    background: var(--pink-light); border-radius: 14px;
+    padding: 14px 18px; margin-bottom: 10px;
+    border-left: 4px solid var(--pink-main);
+    display: flex; align-items: center; justify-content: space-between;
+    transition: transform 0.2s;
+  }
+  .today-session:hover { transform: translateX(3px); }
+  .today-session.done { opacity: 0.6; border-left-color: #a5d6a7; }
+  .today-session.missed { border-left-color: #ef9a9a; background: #fff5f5; }
+  .subject-dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; margin-right: 8px; }
+  .session-info { flex: 1; }
+  .session-subject { font-weight: 600; font-size: 0.9rem; color: var(--text-dark); }
+  .session-time { font-size: 0.78rem; color: var(--text-mid); }
+  .btn-done {
+    background: linear-gradient(135deg, var(--pink-rose), var(--pink-main));
+    color: #fff; border: none; border-radius: 10px;
+    padding: 5px 14px; font-size: 0.78rem; cursor: pointer;
+    font-family: 'Poppins', sans-serif; font-weight: 600;
+    transition: opacity 0.2s;
+  }
+  .btn-done:hover { opacity: 0.85; }
+  .btn-done:disabled { background: #a5d6a7; cursor: default; }
+  .no-sessions { color: var(--text-mid); font-size: 0.88rem; text-align: center; padding: 20px 0; }
+
+  /* ── CALENDAR ── */
+  .calendar-grid { display: grid; grid-template-columns: repeat(7,1fr); gap: 4px; }
+  .cal-header-day { text-align: center; font-size: 0.72rem; font-weight: 700; color: var(--pink-main); padding: 6px 0; text-transform: uppercase; }
+  .cal-day {
+    aspect-ratio: 1; border-radius: 10px; display: flex; flex-direction: column;
+    align-items: center; justify-content: center; cursor: pointer;
+    font-size: 0.82rem; font-weight: 500; color: var(--text-dark);
+    background: var(--pink-light); transition: all 0.2s; position: relative;
+    padding: 4px;
+  }
+  .cal-day:hover { background: var(--pink-soft); transform: scale(1.05); }
+  .cal-day.today { background: linear-gradient(135deg, var(--pink-bright), var(--pink-main)); color: #fff; font-weight: 700; }
+  .cal-day.selected { background: linear-gradient(135deg, var(--pink-deep), #880e4f); color: #fff; }
+  .cal-day.has-sessions::after { content: ''; position: absolute; bottom: 4px; width: 5px; height: 5px; border-radius: 50%; background: var(--pink-hot); }
+  .cal-day.today::after { background: #fff; }
+  .cal-day.exam-week { background: linear-gradient(135deg, #ff80c0, var(--pink-rose)); color: var(--pink-deep); font-weight: 700; }
+  .cal-day.other-month { opacity: 0.3; cursor: default; }
+  .cal-day.other-month:hover { transform: none; background: var(--pink-light); }
+  .cal-nav { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+  .cal-nav-btn {
+    background: var(--pink-light); border: none; border-radius: 10px;
+    width: 36px; height: 36px; cursor: pointer; color: var(--pink-deep);
+    font-size: 1rem; transition: background 0.2s; display: flex; align-items: center; justify-content: center;
+  }
+  .cal-nav-btn:hover { background: var(--pink-soft); }
+  .cal-month-label { font-family: 'Playfair Display', serif; font-size: 1.1rem; color: var(--pink-deep); font-weight: 700; }
+
+  /* ── SESSION FORM ── */
+  .session-form-wrapper { background: var(--pink-light); border-radius: 16px; padding: 20px; margin-top: 16px; }
+  .session-form-title { font-weight: 700; color: var(--pink-deep); margin-bottom: 14px; font-size: 0.95rem; }
+  .form-label-pink { font-size: 0.8rem; font-weight: 600; color: var(--text-mid); margin-bottom: 4px; display: block; }
+  .form-control-pink {
+    border: 2px solid var(--pink-soft); border-radius: 10px; padding: 9px 13px;
+    font-family: 'Poppins', sans-serif; font-size: 0.85rem; width: 100%;
+    background: #fff; color: var(--text-dark); transition: border-color 0.2s;
+  }
+  .form-control-pink:focus { outline: none; border-color: var(--pink-main); box-shadow: 0 0 0 3px rgba(233,30,140,0.1); }
+  .btn-add-session {
+    background: linear-gradient(135deg, var(--pink-bright), var(--pink-deep));
+    color: #fff; border: none; border-radius: 12px; padding: 10px 22px;
+    font-family: 'Poppins', sans-serif; font-weight: 600; font-size: 0.88rem;
+    cursor: pointer; transition: opacity 0.2s, transform 0.2s; margin-top: 8px;
+  }
+  .btn-add-session:hover { opacity: 0.9; transform: translateY(-1px); }
+  .session-slot {
+    background: #fff; border-radius: 12px; padding: 12px 16px;
+    margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between;
+    border: 1.5px solid var(--pink-soft);
+  }
+  .btn-remove-session { background: none; border: none; color: #ef9a9a; cursor: pointer; font-size: 1rem; transition: color 0.2s; }
+  .btn-remove-session:hover { color: #e53935; }
+  .slot-limit-msg { font-size: 0.78rem; color: var(--pink-deep); font-weight: 600; text-align: center; padding: 8px 0; }
+
+  /* ── SUBJECT TABS ── */
+  .subject-tabs { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
+  .subject-tab {
+    border-radius: 20px; padding: 6px 16px; font-size: 0.8rem; font-weight: 600;
+    cursor: pointer; border: 2px solid transparent; transition: all 0.2s;
+    font-family: 'Poppins', sans-serif;
+  }
+  .subject-tab.da { background: var(--pink-blush); color: var(--pink-deep); border-color: var(--pink-soft); }
+  .subject-tab.da.active { background: var(--pink-deep); color: #fff; }
+  .subject-tab.pp { background: #fce4f0; color: #880e4f; border-color: #f48fb1; }
+  .subject-tab.pp.active { background: #880e4f; color: #fff; }
+  .subject-tab.db { background: #fff0f7; color: var(--pink-main); border-color: var(--pink-rose); }
+  .subject-tab.db.active { background: var(--pink-main); color: #fff; }
+  .note-area {
+    border: 2px solid var(--pink-soft); border-radius: 12px; padding: 12px 16px;
+    font-family: 'Poppins', sans-serif; font-size: 0.85rem; width: 100%; min-height: 100px;
+    resize: vertical; background: #fff; color: var(--text-dark); transition: border-color 0.2s;
+  }
+  .note-area:focus { outline: none; border-color: var(--pink-main); box-shadow: 0 0 0 3px rgba(233,30,140,0.1); }
+  .btn-save-note {
+    background: linear-gradient(135deg, var(--pink-rose), var(--pink-deep));
+    color: #fff; border: none; border-radius: 10px; padding: 8px 20px;
+    font-family: 'Poppins', sans-serif; font-weight: 600; font-size: 0.82rem;
+    cursor: pointer; margin-top: 8px; transition: opacity 0.2s;
+  }
+  .btn-save-note:hover { opacity: 0.88; }
+
+  /* ── STATS ── */
+  .stats-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 14px; margin-bottom: 14px; }
+  .stat-pill {
+    background: var(--pink-light); border-radius: 14px; padding: 14px;
+    text-align: center;
+  }
+  .stat-pill .stat-num { font-family: 'Playfair Display', serif; font-size: 1.8rem; color: var(--pink-deep); font-weight: 900; line-height: 1; }
+  .stat-pill .stat-lbl { font-size: 0.72rem; color: var(--text-mid); font-weight: 600; margin-top: 2px; }
+
+  /* ── BADGES ── */
+  .badges-row { display: flex; flex-wrap: wrap; gap: 8px; }
+  .badge-pill {
+    border-radius: 20px; padding: 6px 14px; font-size: 0.78rem; font-weight: 600;
+    background: var(--pink-blush); color: var(--pink-deep); border: 1.5px solid var(--pink-soft);
+    display: flex; align-items: center; gap: 5px;
+  }
+  .badge-pill.earned { background: linear-gradient(135deg, var(--pink-rose), var(--pink-main)); color: #fff; border-color: transparent; }
+  .badge-pill.locked { opacity: 0.4; }
+
+  /* ── EXAM SETUP ── */
+  .exam-setup-form { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .btn-set-exam {
+    background: linear-gradient(135deg, var(--pink-hot), var(--pink-deep));
+    color: #fff; border: none; border-radius: 12px; padding: 10px 22px;
+    font-family: 'Poppins', sans-serif; font-weight: 600; font-size: 0.88rem;
+    cursor: pointer; grid-column: span 2; transition: opacity 0.2s;
+  }
+  .btn-set-exam:hover { opacity: 0.9; }
+
+  /* ── QUOTE ── */
+  .quote-box {
+    background: linear-gradient(135deg, var(--pink-blush), var(--pink-pale));
+    border-radius: 16px; padding: 18px 22px; border-left: 4px solid var(--pink-main);
+    font-style: italic; color: var(--text-mid); font-size: 0.88rem;
+    margin-bottom: 24px;
+  }
+  .quote-box strong { font-style: normal; color: var(--pink-deep); font-size: 0.78rem; display: block; margin-top: 6px; }
+
+  /* ── SECTION HEADINGS ── */
+  .section-heading {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.35rem; color: var(--pink-deep); font-weight: 900;
+    margin-bottom: 18px; display: flex; align-items: center; gap: 8px;
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 768px) {
+    .main-content { padding: 16px; }
+    .app-header { padding: 14px 16px; }
+    .header-title { font-size: 1rem; }
+    .stats-grid { grid-template-columns: repeat(3,1fr); }
+    .exam-setup-form { grid-template-columns: 1fr; }
+    .btn-set-exam { grid-column: span 1; }
+  }
+
+  /* ── DARK MODE toggle ── */
+  body.dark-mode { background: #1a0a14; color: #f8c8e0; }
+  body.dark-mode .pink-card { background: #2d1022; box-shadow: 0 8px 32px rgba(0,0,0,0.4); }
+  body.dark-mode .cal-day { background: #3d1530; color: #f8c8e0; }
+  body.dark-mode .today-session { background: #3d1530; }
+  body.dark-mode .session-slot { background: #3d1530; border-color: #6b2050; }
+  body.dark-mode .session-form-wrapper { background: #3d1530; }
+  body.dark-mode .form-control-pink { background: #2d1022; color: #f8c8e0; border-color: #6b2050; }
+  body.dark-mode .note-area { background: #2d1022; color: #f8c8e0; border-color: #6b2050; }
+  body.dark-mode .stat-pill { background: #3d1530; }
+  body.dark-mode .quote-box { background: #3d1530; }
+
+  .dark-toggle {
+    background: rgba(255,255,255,0.15); border: 1.5px solid rgba(255,255,255,0.4);
+    color: #fff; border-radius: 10px; padding: 5px 12px; cursor: pointer;
+    font-size: 0.8rem; font-family: 'Poppins', sans-serif; transition: background 0.2s;
+  }
+  .dark-toggle:hover { background: rgba(255,255,255,0.28); }
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="loginScreen">
+  <div class="login-card">
+    <div class="login-logo">🌸</div>
+    <div class="login-hearts">💗🎀💗</div>
+    <div class="login-title">PinkStudy</div>
+    <div class="login-sub">🌹Sesame Dithupa🌹</div>
+    <div class="mb-3 text-start">
+      <label class="form-label-pink">Username</label>
+      <input type="text" class="form-control" id="loginUser" placeholder="Enter username"/>
+    </div>
+    <div class="mb-3 text-start">
+      <label class="form-label-pink">Password</label>
+      <input type="password" class="form-control" id="loginPass" placeholder="Enter password"/>
+    </div>
+    <button class="btn-pink-login" onclick="doLogin()">Login 💖</button>
+    <div class="login-error" id="loginError">❌ Incorrect username or password</div>
+  </div>
+</div>
+
+<!-- WELCOME TOAST -->
+<div class="welcome-toast" id="welcomeToast">
+  <strong>Welcome Back, Future Data Engineer!🌸</strong>
+  Ready to slay your study goals today? Let's go, Sesame! 💖✨
+</div>
+
+<!-- APP -->
+<div id="app">
+  <div class="app-header">
+    <div class="header-title">💗Sesame's PinkStudy Space💗</div>
+    <div class="header-right">
+      <div class="streak-badge" id="streakBadge">🔥 0 Day Streak</div>
+      <button class="dark-toggle" onclick="toggleDark()" id="darkBtn">🌙 Dark</button>
+      <button class="btn-logout" onclick="logout()">Logout</button>
+    </div>
+  </div>
+
+  <div class="main-content">
+    <!-- QUOTE -->
+    <div class="quote-box" id="quoteBox">Loading inspiration... 🌸</div>
+
+    <!-- EXAM BANNER -->
+    <div class="exam-banner" id="examBanner">
+      <i class="bi bi-alarm-fill"></i>
+      <div class="exam-banner-text">
+        <strong id="examBannerTitle">Exam Week!</strong>
+        <span id="examBannerSub">Stay focused, you've got this 💪🌸</span>
+      </div>
+    </div>
+
+    <div class="row g-4">
+      <!-- LEFT COLUMN -->
+      <div class="col-lg-8">
+
+        <!-- TODAY -->
+        <div class="pink-card">
+          <div class="pink-card-title"><i class="bi bi-sun-fill"></i> Today's Study Plan</div>
+          <div id="todayList"><div class="no-sessions">No sessions scheduled for today 🌸 Pick a date below to add some!</div></div>
+        </div>
+
+        <!-- CALENDAR -->
+        <div class="pink-card">
+          <div class="pink-card-title"><i class="bi bi-calendar3"></i> Calendar</div>
+          <div class="cal-nav">
+            <button class="cal-nav-btn" onclick="changeMonth(-1)"><i class="bi bi-chevron-left"></i></button>
+            <div class="cal-month-label" id="calMonthLabel"></div>
+            <button class="cal-nav-btn" onclick="changeMonth(1)"><i class="bi bi-chevron-right"></i></button>
+          </div>
+          <div class="calendar-grid" id="calDaysHeader"></div>
+          <div class="calendar-grid mt-1" id="calGrid"></div>
+        </div>
+
+        <!-- SESSION FORM -->
+        <div class="pink-card" id="sessionFormCard" style="display:none">
+          <div class="pink-card-title"><i class="bi bi-plus-circle-fill"></i> <span id="formDateLabel">Schedule Sessions</span></div>
+          <div id="existingSlots"></div>
+          <div id="slotLimitMsg" class="slot-limit-msg" style="display:none">✅ Maximum 3 sessions per day reached!</div>
+          <div class="session-form-wrapper" id="addSlotForm">
+            <div class="session-form-title">➕ Add Session</div>
+            <div class="row g-2 mb-2">
+              <div class="col-6">
+                <label class="form-label-pink">Subject</label>
+                <select class="form-control-pink" id="sessionSubject">
+                  <option value="Data Analytics">📊 Data Analytics</option>
+                  <option value="Python Programming">🐍 Python Programming</option>
+                  <option value="Database Dev">🗄️ Database Dev</option>
+                </select>
+              </div>
+              <div class="col-3">
+                <label class="form-label-pink">Start</label>
+                <input type="time" class="form-control-pink" id="sessionStart"/>
+              </div>
+              <div class="col-3">
+                <label class="form-label-pink">End</label>
+                <input type="time" class="form-control-pink" id="sessionEnd"/>
+              </div>
+            </div>
+            <button class="btn-add-session" onclick="addSession()">Add Session🌸</button>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- RIGHT COLUMN -->
+      <div class="col-lg-4">
+
+        <!-- STATS -->
+        <div class="pink-card">
+          <div class="pink-card-title"><i class="bi bi-bar-chart-fill"></i> Stats</div>
+          <div class="stats-grid">
+            <div class="stat-pill"><div class="stat-num" id="statTotal">0</div><div class="stat-lbl">Total Sessions</div></div>
+            <div class="stat-pill"><div class="stat-num" id="statDone">0</div><div class="stat-lbl">Completed</div></div>
+            <div class="stat-pill"><div class="stat-num" id="statStreak">0</div><div class="stat-lbl">Day Streak</div></div>
+          </div>
+          <canvas id="monthChart" height="160"></canvas>
+        </div>
+
+        <!-- SUBJECT PIE -->
+        <div class="pink-card">
+          <div class="pink-card-title"><i class="bi bi-pie-chart-fill"></i> Subject Breakdown</div>
+          <canvas id="subjectChart" height="180"></canvas>
+        </div>
+
+        <!-- BADGES -->
+        <div class="pink-card">
+          <div class="pink-card-title"><i class="bi bi-trophy-fill"></i> Badges</div>
+          <div class="badges-row" id="badgesRow"></div>
+        </div>
+
+        <!-- NOTES -->
+        <div class="pink-card">
+          <div class="pink-card-title"><i class="bi bi-sticky-fill"></i> Quick Notes</div>
+          <div class="subject-tabs" id="noteTabs"></div>
+          <textarea class="note-area" id="noteArea" placeholder="Jot something down... 🌸"></textarea>
+          <button class="btn-save-note" onclick="saveNote()">Save Note 💾</button>
+          <div id="noteSaved" style="display:none;color:var(--pink-deep);font-size:0.78rem;margin-top:6px;">✅ Note saved!</div>
+        </div>
+
+        <!-- EXAM WEEK -->
+        <div class="pink-card">
+          <div class="pink-card-title"><i class="bi bi-calendar-week-fill"></i> Set Exam Week</div>
+          <div class="exam-setup-form">
+            <div>
+              <label class="form-label-pink">Start Date</label>
+              <input type="date" class="form-control-pink" id="examStart"/>
+            </div>
+            <div>
+              <label class="form-label-pink">End Date</label>
+              <input type="date" class="form-control-pink" id="examEnd"/>
+            </div>
+            <div>
+              <label class="form-label-pink">Exam Name</label>
+              <input type="text" class="form-control-pink" id="examName" placeholder="e.g. Semester 1 Exams"/>
+            </div>
+            <div style="display:flex;align-items:flex-end;">
+              <button class="btn-set-exam" onclick="setExamWeek()" style="width:100%;grid-column:unset;">Set 🗓️</button>
+            </div>
+          </div>
+          <div id="currentExamInfo" style="margin-top:10px;font-size:0.8rem;color:var(--text-mid);"></div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── DATA ──
+const CREDENTIALS = { user: 'Sesame', pass: 'Mickie@22November2024' };
+const SUBJECTS = { 'Data Analytics': 'da', 'Python Programming': 'pp', 'Database Dev': 'db' };
+const SUBJECT_COLORS = { 'Data Analytics': '#e91e8c', 'Python Programming': '#880e4f', 'Database Dev': '#ff69b4' };
+const QUOTES = [
+  { text: "Data is the new pink — and you're the analyst. 💅", attr: "PinkStudy Wisdom" },
+  { text: "Every line of Python you write brings you closer to your dreams. 🐍🌸", attr: "PinkStudy Wisdom" },
+  { text: "Databases don't scare you — you designed them. 🗄️💖", attr: "PinkStudy Wisdom" },
+  { text: "Study hard, slay harder. The Data Engineer era is coming. ✨", attr: "PinkStudy Wisdom" },
+  { text: "She studied, she struggled, she succeeded. That's the story. 🌸", attr: "PinkStudy Wisdom" },
+  { text: "Your future self is grateful for every session you show up to. 💗", attr: "PinkStudy Wisdom" },
+  { text: "Queries, code, and caffeine — the holy trinity. ☕🌷", attr: "PinkStudy Wisdom" },
+];
+const BADGES_DEF = [
+  { id: 'first', icon: '🌸', label: 'First Session', check: s => s.totalDone >= 1 },
+  { id: 'streak3', icon: '🔥', label: '3-Day Streak', check: s => s.streak >= 3 },
+  { id: 'fullday', icon: '🎉', label: 'Full Day', check: s => s.hadFullDay },
+  { id: 'exam', icon: '📚', label: 'Exam Ready', check: s => s.examSet },
+  { id: 'week', icon: '🏆', label: 'Full Week Planned', check: s => s.fullWeekPlanned },
+];
+
+let state = {
+  sessions: {}, // { 'YYYY-MM-DD': [{subject, start, end, done}] }
+  notes: { 'Data Analytics': '', 'Python Programming': '', 'Database Dev': '' },
+  examWeek: null, // { start, end, name }
+  streak: 0,
+  lastStudyDate: null,
+  dark: false,
+  hadFullDay: false,
+  examSet: false,
+};
+let calYear, calMonth, selectedDate = null;
+let monthChartInst = null, subjectChartInst = null;
+let noteSubject = 'Data Analytics';
+
+// ── STORAGE ──
+function save() { localStorage.setItem('pinkStudy', JSON.stringify(state)); }
+function load() {
+  const d = localStorage.getItem('pinkStudy');
+  if (d) state = { ...state, ...JSON.parse(d) };
+}
+
+// ── LOGIN ──
+function doLogin() {
+  const u = document.getElementById('loginUser').value.trim();
+  const p = document.getElementById('loginPass').value;
+  if (u === CREDENTIALS.user && p === CREDENTIALS.pass) {
+    document.getElementById('loginScreen').style.display = 'none';
+    document.getElementById('app').style.display = 'block';
+    showWelcomeToast();
+    initApp();
+  } else {
+    document.getElementById('loginError').style.display = 'block';
+  }
+}
+document.getElementById('loginPass').addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
+
+function showWelcomeToast() {
+  const t = document.getElementById('welcomeToast');
+  t.style.display = 'block';
+  setTimeout(() => { t.style.display = 'none'; }, 5000);
+}
+
+function logout() {
+  document.getElementById('loginScreen').style.display = 'flex';
+  document.getElementById('app').style.display = 'none';
+  document.getElementById('loginUser').value = '';
+  document.getElementById('loginPass').value = '';
+}
+
+// ── INIT ──
+function initApp() {
+  load();
+  const now = new Date();
+  calYear = now.getFullYear(); calMonth = now.getMonth();
+  calcStreak();
+  renderCalendar();
+  renderToday();
+  renderStats();
+  renderBadges();
+  renderNotes();
+  renderExamBanner();
+  showQuote();
+  if (state.dark) document.body.classList.add('dark-mode');
+  document.getElementById('darkBtn').textContent = state.dark ? '☀️ Light' : '🌙 Dark';
+  requestNotifPerm();
+}
+
+// ── QUOTE ──
+function showQuote() {
+  const q = QUOTES[Math.floor(Math.random() * QUOTES.length)];
+  document.getElementById('quoteBox').innerHTML = `"${q.text}" <strong>— ${q.attr}</strong>`;
+}
+
+// ── NOTIFICATIONS ──
+function requestNotifPerm() {
+  if ('Notification' in window && Notification.permission === 'default') Notification.requestPermission();
+}
+function scheduleNotif(subject, time, dateStr) {
+  if (Notification.permission !== 'granted') return;
+  const [h, m] = time.split(':').map(Number);
+  const target = new Date(dateStr + 'T' + time);
+  const remind = new Date(target.getTime() - 15 * 60000);
+  const now = new Date();
+  const diff = remind - now;
+  if (diff > 0) setTimeout(() => new Notification('PinkStudy 🌸', { body: `${subject} starts in 15 mins! Get ready 💖` }), diff);
+}
+
+// ── CALENDAR ──
+function changeMonth(d) { calMonth += d; if (calMonth > 11) { calMonth = 0; calYear++; } if (calMonth < 0) { calMonth = 11; calYear--; } renderCalendar(); }
+
+function renderCalendar() {
+  const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+  document.getElementById('calMonthLabel').textContent = `${months[calMonth]} ${calYear}`;
+  const hdr = document.getElementById('calDaysHeader');
+  hdr.innerHTML = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'].map(d => `<div class="cal-header-day">${d}</div>`).join('');
+  const grid = document.getElementById('calGrid');
+  const first = new Date(calYear, calMonth, 1).getDay();
+  const days = new Date(calYear, calMonth + 1, 0).getDate();
+  const prevDays = new Date(calYear, calMonth, 0).getDate();
+  const today = new Date(); const todayStr = toDateStr(today);
+  let html = '';
+  for (let i = 0; i < first; i++) {
+    const d = prevDays - first + 1 + i;
+    html += `<div class="cal-day other-month">${d}</div>`;
+  }
+  for (let d = 1; d <= days; d++) {
+    const ds = `${calYear}-${String(calMonth+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    let cls = 'cal-day';
+    if (ds === todayStr) cls += ' today';
+    if (ds === selectedDate) cls += ' selected';
+    if (state.sessions[ds] && state.sessions[ds].length > 0) cls += ' has-sessions';
+    if (isExamWeek(ds)) cls += ' exam-week';
+    html += `<div class="${cls}" onclick="selectDate('${ds}')">${d}</div>`;
+  }
+  grid.innerHTML = html;
+}
+
+function toDateStr(d) { return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`; }
+
+function isExamWeek(ds) {
+  if (!state.examWeek) return false;
+  return ds >= state.examWeek.start && ds <= state.examWeek.end;
+}
+
+function selectDate(ds) {
+  selectedDate = ds;
+  renderCalendar();
+  const card = document.getElementById('sessionFormCard');
+  card.style.display = 'block';
+  const d = new Date(ds + 'T12:00:00');
+  document.getElementById('formDateLabel').textContent = `Sessions for ${d.toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long'})}`;
+  renderSlots();
+  card.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+// ── SESSIONS ──
+function renderSlots() {
+  const slots = state.sessions[selectedDate] || [];
+  const container = document.getElementById('existingSlots');
+  const form = document.getElementById('addSlotForm');
+  const limitMsg = document.getElementById('slotLimitMsg');
+  container.innerHTML = slots.map((s, i) => `
+    <div class="session-slot">
+      <span class="subject-dot" style="background:${SUBJECT_COLORS[s.subject]}"></span>
+      <div style="flex:1">
+        <div style="font-weight:600;font-size:0.88rem;">${s.subject}</div>
+        <div style="font-size:0.76rem;color:var(--text-mid)">${s.start} – ${s.end}</div>
+      </div>
+      <button class="btn-remove-session" onclick="removeSession(${i})"><i class="bi bi-x-circle-fill"></i></button>
+    </div>`).join('');
+  if (slots.length >= 3) { form.style.display = 'none'; limitMsg.style.display = 'block'; }
+  else { form.style.display = 'block'; limitMsg.style.display = 'none'; }
+}
+
+function addSession() {
+  const subject = document.getElementById('sessionSubject').value;
+  const start = document.getElementById('sessionStart').value;
+  const end = document.getElementById('sessionEnd').value;
+  if (!start || !end) { alert('Please set start and end times 🌸'); return; }
+  if (!state.sessions[selectedDate]) state.sessions[selectedDate] = [];
+  if (state.sessions[selectedDate].length >= 3) return;
+  state.sessions[selectedDate].push({ subject, start, end, done: false });
+  scheduleNotif(subject, start, selectedDate);
+  save(); renderSlots(); renderCalendar(); renderToday(); renderStats(); renderBadges();
+}
+
+function removeSession(i) {
+  state.sessions[selectedDate].splice(i, 1);
+  save(); renderSlots(); renderCalendar(); renderToday(); renderStats();
+}
+
+// ── TODAY ──
+function renderToday() {
+  const today = toDateStr(new Date());
+  const sessions = state.sessions[today] || [];
+  const list = document.getElementById('todayList');
+  if (sessions.length === 0) { list.innerHTML = '<div class="no-sessions">No sessions today 🌸 Pick today on the calendar to add some!</div>'; return; }
+  const now = new Date();
+  list.innerHTML = sessions.map((s, i) => {
+    const end = new Date(`${today}T${s.end}`);
+    const missed = !s.done && end < now;
+    let cls = 'today-session'; if (s.done) cls += ' done'; else if (missed) cls += ' missed';
+    const label = s.done ? '✅ Done' : missed ? '⚠️ Missed' : 'Mark Done';
+    return `<div class="${cls}">
+      <span class="subject-dot" style="background:${SUBJECT_COLORS[s.subject]}"></span>
+      <div class="session-info">
+        <div class="session-subject">${s.subject}</div>
+        <div class="session-time">${s.start} – ${s.end}${missed && !s.done ? ' · <span style="color:#e53935">Missed</span>' : ''}</div>
+      </div>
+      <button class="btn-done" onclick="markDone(${i})" ${s.done ? 'disabled' : ''}>${label}</button>
+    </div>`;
+  }).join('');
+}
+
+function markDone(i) {
+  const today = toDateStr(new Date());
+  if (!state.sessions[today]) return;
+  state.sessions[today][i].done = true;
+  const all = state.sessions[today].every(s => s.done);
+  if (all && state.sessions[today].length === 3) {
+    state.hadFullDay = true;
+    confetti({ particleCount: 160, spread: 80, colors: ['#ff4db8','#e91e8c','#ff69b4','#fff','#c2185b'] });
+  } else if (all) {
+    confetti({ particleCount: 80, spread: 60, colors: ['#ff4db8','#e91e8c','#ff69b4'] });
+  }
+  updateStreak();
+  save(); renderToday(); renderStats(); renderBadges();
+}
+
+// ── STREAK ──
+function calcStreak() {
+  const today = toDateStr(new Date());
+  if (!state.lastStudyDate) { state.streak = 0; return; }
+  const last = new Date(state.lastStudyDate + 'T12:00:00');
+  const t = new Date(today + 'T12:00:00');
+  const diff = Math.round((t - last) / 86400000);
+  if (diff > 1) state.streak = 0;
+  document.getElementById('streakBadge').textContent = `🔥 ${state.streak} Day Streak`;
+  document.getElementById('statStreak').textContent = state.streak;
+}
+
+function updateStreak() {
+  const today = toDateStr(new Date());
+  if (state.lastStudyDate === today) return;
+  const yesterday = new Date(); yesterday.setDate(yesterday.getDate() - 1);
+  const yStr = toDateStr(yesterday);
+  if (state.lastStudyDate === yStr || !state.lastStudyDate) state.streak = (state.streak || 0) + 1;
+  else state.streak = 1;
+  state.lastStudyDate = today;
+  document.getElementById('streakBadge').textContent = `🔥 ${state.streak} Day Streak`;
+}
+
+// ── STATS ──
+function renderStats() {
+  let total = 0, done = 0;
+  const subjectCount = { 'Data Analytics': 0, 'Python Programming': 0, 'Database Dev': 0 };
+  const monthCounts = Array(31).fill(0);
+  Object.entries(state.sessions).forEach(([ds, ss]) => {
+    total += ss.length;
+    ss.forEach(s => {
+      if (s.done) { done++; subjectCount[s.subject] = (subjectCount[s.subject] || 0) + 1; }
+    });
+    const d = new Date(ds + 'T12:00:00');
+    if (d.getFullYear() === calYear && d.getMonth() === calMonth) monthCounts[d.getDate() - 1] = ss.filter(s => s.done).length;
+  });
+  document.getElementById('statTotal').textContent = total;
+  document.getElementById('statDone').textContent = done;
+  document.getElementById('statStreak').textContent = state.streak || 0;
+
+  // Monthly chart
+  const days = new Date(calYear, calMonth + 1, 0).getDate();
+  const labels = Array.from({ length: days }, (_, i) => i + 1);
+  if (monthChartInst) monthChartInst.destroy();
+  monthChartInst = new Chart(document.getElementById('monthChart'), {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: [{ label: 'Sessions Done', data: monthCounts.slice(0, days), backgroundColor: 'rgba(233,30,140,0.6)', borderRadius: 6, borderSkipped: false }]
+    },
+    options: { plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } }, x: { ticks: { font: { size: 9 } } } }, maintainAspectRatio: false }
+  });
+
+  // Subject pie
+  if (subjectChartInst) subjectChartInst.destroy();
+  const vals = Object.values(subjectCount);
+  if (vals.some(v => v > 0)) {
+    subjectChartInst = new Chart(document.getElementById('subjectChart'), {
+      type: 'doughnut',
+      data: {
+        labels: Object.keys(subjectCount),
+        datasets: [{ data: vals, backgroundColor: ['#e91e8c','#880e4f','#ff69b4'], borderWidth: 0 }]
+      },
+      options: { plugins: { legend: { position: 'bottom', labels: { font: { size: 11 }, padding: 10 } } }, cutout: '65%', maintainAspectRatio: false }
+    });
+  }
+
+  // Check full week
+  checkFullWeek();
+}
+
+function checkFullWeek() {
+  const now = new Date(); const day = now.getDay();
+  const monday = new Date(now); monday.setDate(now.getDate() - (day === 0 ? 6 : day - 1));
+  let count = 0;
+  for (let i = 0; i < 7; i++) {
+    const d = new Date(monday); d.setDate(monday.getDate() + i);
+    const ds = toDateStr(d);
+    if (state.sessions[ds] && state.sessions[ds].length > 0) count++;
+  }
+  if (count >= 7) state.fullWeekPlanned = true;
+}
+
+// ── BADGES ──
+function renderBadges() {
+  const statsObj = {
+    totalDone: Object.values(state.sessions).flat().filter(s => s.done).length,
+    streak: state.streak || 0,
+    hadFullDay: state.hadFullDay,
+    examSet: state.examSet,
+    fullWeekPlanned: state.fullWeekPlanned,
+  };
+  document.getElementById('badgesRow').innerHTML = BADGES_DEF.map(b => {
+    const earned = b.check(statsObj);
+    return `<div class="badge-pill ${earned ? 'earned' : 'locked'}">${b.icon} ${b.label}</div>`;
+  }).join('');
+}
+
+// ── NOTES ──
+function renderNotes() {
+  const tabs = document.getElementById('noteTabs');
+  tabs.innerHTML = Object.keys(SUBJECTS).map(s => `
+    <button class="subject-tab ${SUBJECTS[s]} ${s === noteSubject ? 'active' : ''}" onclick="switchNote('${s}')">${s}</button>`).join('');
+  document.getElementById('noteArea').value = state.notes[noteSubject] || '';
+}
+
+function switchNote(s) { noteSubject = s; renderNotes(); document.getElementById('noteSaved').style.display = 'none'; }
+
+function saveNote() {
+  state.notes[noteSubject] = document.getElementById('noteArea').value;
+  save();
+  const msg = document.getElementById('noteSaved'); msg.style.display = 'block';
+  setTimeout(() => msg.style.display = 'none', 2000);
+}
+
+// ── EXAM WEEK ──
+function setExamWeek() {
+  const s = document.getElementById('examStart').value;
+  const e = document.getElementById('examEnd').value;
+  const n = document.getElementById('examName').value.trim();
+  if (!s || !e || !n) { alert('Please fill all exam fields 🌸'); return; }
+  state.examWeek = { start: s, end: e, name: n }; state.examSet = true;
+  save(); renderCalendar(); renderExamBanner(); renderBadges();
+  document.getElementById('currentExamInfo').textContent = `✅ Set: ${n} (${s} → ${e})`;
+}
+
+function renderExamBanner() {
+  if (!state.examWeek) return;
+  const today = toDateStr(new Date());
+  const banner = document.getElementById('examBanner');
+  if (today >= state.examWeek.start && today <= state.examWeek.end) {
+    banner.style.display = 'flex';
+    document.getElementById('examBannerTitle').textContent = `📚 ${state.examWeek.name} – You're in exam week!`;
+    document.getElementById('examBannerSub').textContent = "Stay focused, you've got this 💪🌸";
+  } else if (today < state.examWeek.start) {
+    banner.style.display = 'flex';
+    const diff = Math.ceil((new Date(state.examWeek.start) - new Date()) / 86400000);
+    document.getElementById('examBannerTitle').textContent = `⏳ ${state.examWeek.name}`;
+    document.getElementById('examBannerSub').textContent = `Starts in ${diff} day${diff !== 1 ? 's' : ''} — keep grinding! 🌸`;
+  } else { banner.style.display = 'none'; }
+}
+
+// ── DARK MODE ──
+function toggleDark() {
+  state.dark = !state.dark; save();
+  document.body.classList.toggle('dark-mode', state.dark);
+  document.getElementById('darkBtn').textContent = state.dark ? '☀️ Light' : '🌙 Dark';
+}
+</script>
+</body>
+</html>
