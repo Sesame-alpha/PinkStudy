@@ -27,69 +27,88 @@
     --shadow-lg: 0 16px 48px rgba(233,30,140,0.22);
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: 'Poppins', sans-serif; background: var(--pink-blush); color: var(--text-dark); min-height: 100vh; }
+  body { font-family: 'Poppins', sans-serif; background: #fff5fa; color: var(--text-dark); min-height: 100vh; }
 
   /* ── LOGIN ── */
   #loginScreen {
     min-height: 100vh;
-    background: linear-gradient(135deg, #ff80c0 0%, #e91e8c 40%, #c2185b 100%);
+    background: linear-gradient(160deg, #ffe0ef 0%, #ffeaf4 40%, #fff4f9 70%, #fffafc 100%);
     display: flex; align-items: center; justify-content: center;
     position: fixed; inset: 0; z-index: 9999;
   }
   .login-card {
-    background: rgba(255,255,255,0.97);
+    background: #fff;
     border-radius: 28px;
-    padding: 50px 44px;
-    width: 100%; max-width: 420px;
-    box-shadow: 0 24px 64px rgba(194,24,91,0.35);
+    padding: 44px 36px 36px;
+    width: 90%; max-width: 380px;
+    box-shadow: 0 16px 48px rgba(194,24,91,0.14);
     text-align: center;
   }
-  .login-logo { font-size: 3rem; margin-bottom: 4px; }
-  .login-title { font-family: 'Playfair Display', serif; font-size: 2rem; color: var(--pink-deep); font-weight: 900; }
-  .login-sub { color: var(--text-mid); font-size: 0.85rem; margin-bottom: 28px; }
+  .login-logo { font-size: 2.6rem; margin-bottom: 2px; }
+  .login-title { font-family: 'Playfair Display', serif; font-size: 2rem; color: var(--pink-main); font-weight: 900; }
+  .login-sub { color: #b06090; font-size: 0.82rem; margin-bottom: 28px; font-weight: 400; }
+  .login-divider { border: none; border-top: 1px solid #f5c6dc; margin: 0 0 22px; }
+  .login-field-label { text-align: left; font-size: 0.72rem; font-weight: 700; color: #b06090; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 5px; display: block; }
   .login-card .form-control {
-    border: 2px solid var(--pink-soft);
-    border-radius: 14px; padding: 12px 16px;
-    font-family: 'Poppins', sans-serif;
-    transition: border-color 0.2s;
+    border: 1.5px solid #f0c0d8;
+    border-radius: 14px; padding: 13px 16px;
+    font-family: 'Poppins', sans-serif; font-size: 0.88rem;
+    background: #fff8fc; color: var(--text-dark);
+    transition: border-color 0.2s; width: 100%;
   }
-  .login-card .form-control:focus { border-color: var(--pink-main); box-shadow: 0 0 0 3px rgba(233,30,140,0.12); }
+  .login-card .form-control:focus { outline: none; border-color: var(--pink-main); box-shadow: 0 0 0 3px rgba(233,30,140,0.09); }
+  .login-btn-row { display: flex; gap: 10px; margin-top: 20px; }
+  .btn-login-cancel {
+    flex: 1; background: #fff; color: var(--pink-deep);
+    border: 1.5px solid #f0c0d8; border-radius: 14px;
+    padding: 13px; font-size: 0.92rem; font-weight: 600;
+    cursor: pointer; font-family: 'Poppins', sans-serif;
+    transition: background 0.2s;
+  }
+  .btn-login-cancel:hover { background: #fff0f6; }
   .btn-pink-login {
-    background: linear-gradient(135deg, var(--pink-bright), var(--pink-deep));
+    flex: 2; background: var(--pink-main);
     color: #fff; border: none; border-radius: 14px;
-    padding: 13px; font-size: 1rem; font-weight: 600;
-    width: 100%; margin-top: 8px; cursor: pointer;
+    padding: 13px; font-size: 0.92rem; font-weight: 600;
+    cursor: pointer; font-family: 'Poppins', sans-serif;
     transition: opacity 0.2s, transform 0.2s;
-    font-family: 'Poppins', sans-serif;
   }
-  .btn-pink-login:hover { opacity: 0.92; transform: translateY(-1px); }
-  .login-error { color: var(--pink-deep); font-size: 0.82rem; margin-top: 8px; display: none; }
-  .login-hearts { font-size: 1.4rem; letter-spacing: 4px; margin-bottom: 18px; }
+  .btn-pink-login:hover { opacity: 0.9; transform: translateY(-1px); }
+  .login-error { color: var(--pink-deep); font-size: 0.8rem; margin-top: 10px; display: none; }
+  .login-hearts { font-size: 1.3rem; letter-spacing: 3px; margin-bottom: 14px; }
 
   /* ── APP SHELL ── */
   #app { display: none; }
 
   /* ── HEADER ── */
   .app-header {
-    background: linear-gradient(135deg, #ff4db8 0%, #e91e8c 50%, #c2185b 100%);
-    padding: 18px 32px;
-    display: flex; align-items: center; justify-content: space-between;
-    box-shadow: 0 4px 20px rgba(194,24,91,0.3);
-    position: sticky; top: 0; z-index: 100;
+    background: linear-gradient(135deg, #ff8fc8 0%, #ff5fae 100%);
+    padding: 22px 32px;
+    text-align: center;
+    box-shadow: 0 2px 12px rgba(255,143,200,0.25);
   }
-  .header-title { font-family: 'Playfair Display', serif; font-size: 1.5rem; color: #fff; font-weight: 900; letter-spacing: 0.5px; }
-  .header-right { display: flex; align-items: center; gap: 14px; }
+  .header-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.6rem; color: #fff; font-weight: 900;
+    letter-spacing: 0.3px;
+  }
+  /* ── FOOTER TOOLBAR ── */
+  .app-footer-bar {
+    background: #fff; border-top: 1.5px solid #f8d7ea;
+    padding: 12px 24px; margin-top: 10px;
+    display: flex; align-items: center; justify-content: center; gap: 10px;
+  }
   .streak-badge {
-    background: rgba(255,255,255,0.22); color: #fff;
-    border-radius: 20px; padding: 5px 14px;
-    font-size: 0.8rem; font-weight: 600;
+    background: var(--pink-blush); color: var(--pink-deep);
+    border-radius: 20px; padding: 4px 12px;
+    font-size: 0.76rem; font-weight: 700; border: 1.5px solid var(--pink-soft);
   }
   .btn-logout {
-    background: rgba(255,255,255,0.2); color: #fff; border: 1.5px solid rgba(255,255,255,0.5);
-    border-radius: 10px; padding: 5px 14px; font-size: 0.8rem; cursor: pointer;
-    font-family: 'Poppins', sans-serif; transition: background 0.2s;
+    background: #fff; color: var(--pink-deep); border: 1.5px solid #f0c0d8;
+    border-radius: 8px; padding: 4px 12px; font-size: 0.76rem; cursor: pointer;
+    font-family: 'Poppins', sans-serif; font-weight: 600; transition: background 0.2s;
   }
-  .btn-logout:hover { background: rgba(255,255,255,0.35); }
+  .btn-logout:hover { background: var(--pink-blush); }
 
   /* ── TOAST ── */
   .welcome-toast {
@@ -240,13 +259,13 @@
   .btn-save-note:hover { opacity: 0.88; }
 
   /* ── STATS ── */
-  .stats-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 14px; margin-bottom: 14px; }
+  .stats-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 10px; margin-bottom: 14px; }
   .stat-pill {
-    background: var(--pink-light); border-radius: 14px; padding: 14px;
-    text-align: center;
+    background: var(--pink-light); border-radius: 10px; padding: 6px 6px;
+    text-align: center; border: 1.5px solid var(--pink-soft);
   }
-  .stat-pill .stat-num { font-family: 'Playfair Display', serif; font-size: 1.8rem; color: var(--pink-deep); font-weight: 900; line-height: 1; }
-  .stat-pill .stat-lbl { font-size: 0.72rem; color: var(--text-mid); font-weight: 600; margin-top: 2px; }
+  .stat-pill .stat-num { font-family: 'Playfair Display', serif; font-size: 1.25rem; color: var(--pink-deep); font-weight: 900; line-height: 1; }
+  .stat-pill .stat-lbl { font-size: 0.62rem; color: var(--text-mid); font-weight: 600; margin-top: 1px; }
 
   /* ── BADGES ── */
   .badges-row { display: flex; flex-wrap: wrap; gap: 8px; }
@@ -307,11 +326,11 @@
   body.dark-mode .quote-box { background: #3d1530; }
 
   .dark-toggle {
-    background: rgba(255,255,255,0.15); border: 1.5px solid rgba(255,255,255,0.4);
-    color: #fff; border-radius: 10px; padding: 5px 12px; cursor: pointer;
-    font-size: 0.8rem; font-family: 'Poppins', sans-serif; transition: background 0.2s;
+    background: #fff; border: 1.5px solid #f0c0d8;
+    color: var(--pink-deep); border-radius: 8px; padding: 4px 12px; cursor: pointer;
+    font-size: 0.76rem; font-family: 'Poppins', sans-serif; font-weight: 600; transition: background 0.2s;
   }
-  .dark-toggle:hover { background: rgba(255,255,255,0.28); }
+  .dark-toggle:hover { background: var(--pink-blush); }
 </style>
 </head>
 <body>
@@ -319,19 +338,22 @@
 <!-- LOGIN -->
 <div id="loginScreen">
   <div class="login-card">
-    <div class="login-logo">🌸</div>
-    <div class="login-hearts">💗🎀💗</div>
-    <div class="login-title">PinkStudy</div>
-    <div class="login-sub">🌹Sesame Dithupa's Study Space🌹</div>
+    <div class="login-logo">🌸🌸</div>
+    <div class="login-title">🌹PinkStudy🌹</div>
+    <div class="login-sub"💗>Sesame's Study Space💗</div>
+    <hr class="login-divider"/>
     <div class="mb-3 text-start">
-      <label class="form-label-pink">Username</label>
+      <label class="login-field-label">Username</label>
       <input type="text" class="form-control" id="loginUser" placeholder="Enter username"/>
     </div>
-    <div class="mb-3 text-start">
-      <label class="form-label-pink">Password</label>
+    <div class="mb-2 text-start">
+      <label class="login-field-label">Password</label>
       <input type="password" class="form-control" id="loginPass" placeholder="Enter password"/>
     </div>
-    <button class="btn-pink-login" onclick="doLogin()">Login 💖</button>
+    <div class="login-btn-row">
+      <button class="btn-login-cancel" onclick="document.getElementById('loginUser').value='';document.getElementById('loginPass').value=''">Cancel</button>
+      <button class="btn-pink-login" onclick="doLogin()">Submit</button>
+    </div>
     <div class="login-error" id="loginError">❌ Incorrect username or password</div>
   </div>
 </div>
@@ -346,11 +368,6 @@
 <div id="app">
   <div class="app-header">
     <div class="header-title">💗Sesame's PinkStudy Hub💗</div>
-    <div class="header-right">
-      <div class="streak-badge" id="streakBadge">🔥 0 Day Streak</div>
-      <button class="dark-toggle" onclick="toggleDark()" id="darkBtn">🌙 Dark</button>
-      <button class="btn-logout" onclick="logout()">Logout</button>
-    </div>
   </div>
 
   <div class="main-content">
@@ -422,21 +439,18 @@
       <!-- RIGHT COLUMN -->
       <div class="col-lg-4">
 
-        <!-- STATS -->
-        <div class="pink-card">
-          <div class="pink-card-title"><i class="bi bi-bar-chart-fill"></i> Stats</div>
-          <div class="stats-grid">
-            <div class="stat-pill"><div class="stat-num" id="statTotal">0</div><div class="stat-lbl">Total Sessions</div></div>
-            <div class="stat-pill"><div class="stat-num" id="statDone">0</div><div class="stat-lbl">Completed</div></div>
-            <div class="stat-pill"><div class="stat-num" id="statStreak">0</div><div class="stat-lbl">Day Streak</div></div>
+        <!-- STATS + CHARTS (compact card) -->
+        <div class="pink-card" style="padding:18px;">
+          <div class="pink-card-title" style="margin-bottom:10px;"><i class="bi bi-bar-chart-fill"></i> Statistics</div>
+          <div class="stats-grid" style="margin-bottom:10px;">
+            <div class="stat-pill"><div class="stat-num" id="statTotal">0</div><div class="stat-lbl">Total</div></div>
+            <div class="stat-pill"><div class="stat-num" id="statDone">0</div><div class="stat-lbl">Done</div></div>
+            <div class="stat-pill"><div class="stat-num" id="statStreak">0</div><div class="stat-lbl">Streak</div></div>
           </div>
-          <canvas id="monthChart" height="160"></canvas>
-        </div>
-
-        <!-- SUBJECT PIE -->
-        <div class="pink-card">
-          <div class="pink-card-title"><i class="bi bi-pie-chart-fill"></i> Subject Breakdown</div>
-          <canvas id="subjectChart" height="180"></canvas>
+          <div style="font-size:0.72rem;color:var(--text-mid);font-weight:600;margin-bottom:4px;">Monthly Sessions</div>
+          <canvas id="monthChart" height="70"></canvas>
+          <div style="font-size:0.72rem;color:var(--text-mid);font-weight:600;margin:10px 0 4px;">Subject Breakdown</div>
+          <canvas id="subjectChart" height="90"></canvas>
         </div>
 
         <!-- BADGES -->
@@ -479,6 +493,11 @@
 
       </div>
     </div>
+  </div>
+  <div class="app-footer-bar">
+    <div class="streak-badge" id="streakBadge">🔥 0 Day Streak</div>
+    <button class="dark-toggle" onclick="toggleDark()" id="darkBtn">🌙 Dark</button>
+    <button class="btn-logout" onclick="logout()">Logout</button>
   </div>
 </div>
 
